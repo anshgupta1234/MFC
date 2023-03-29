@@ -44,7 +44,7 @@ jobs:
       - name: Clone
         uses: actions/checkout@v3
 
-      - name: Setup
+      - name: Setup MacOS
         if:   matrix.os == 'macos-latest'
         run: |
           echo "OMPI_FC=gfortran-${{ matrix.gcc }}" >> $GITHUB_ENV
@@ -56,11 +56,11 @@ jobs:
           brew install wget make python make cmake coreutils gcc@${{ matrix.gcc }}
           HOMEBREW_MAKE_JOBS=$(nproc) brew install --cc=gcc-${{ matrix.gcc }} --verbose --build-from-source open-mpi
 
-      - name: Setup
+      - name: Setup Ubuntu
         if:   matrix.os == 'ubuntu-latest' && !matrix.intel
         run:  sudo apt install tar wget make cmake gcc g++ python3 python3-dev "openmpi-*" libopenmpi-dev
 
-      - name: Setup
+      - name: Setup Ubuntu (Intel)
         if:   matrix.os == 'ubuntu-latest' && matrix.intel
         run: |
           sudo apt install tar wget make cmake gcc g++ python3 python3-dev "openmpi-*" libopenmpi-dev
@@ -70,17 +70,21 @@ jobs:
           sudo echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
           sudo apt-get update
           sudo apt-get install -y intel-oneapi-common-vars intel-oneapi-compiler-fortran intel-oneapi-mkl intel-oneapi-mpi intel-oneapi-mpi-devel
+          set +e
           source /opt/intel/oneapi/setvars.sh
-          printenv >> $GITHUB_ENV
+          set -e
+          export CXX=$(which icpc)
+          export CC=$(which icc)
+          export FC=$(which ifort)
        
       - name: Build
         run:  /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
 
-      - name: Test Suite
+      - name: Test Suite (Debug)
         if: matrix.debug == '--debug'
         run:  /bin/bash mfc.sh test  -j $(nproc) -a --debug
         
-      - name: Test Suite
+      - name: Test Suite (No Debug)
         if: matrix.debug == '--no-debug'
         run:  /bin/bash mfc.sh test  -j $(nproc) -a 
         
