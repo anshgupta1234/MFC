@@ -71,24 +71,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y intel-oneapi-common-vars intel-oneapi-compiler-fortran intel-oneapi-mkl intel-oneapi-mpi intel-oneapi-mpi-devel intel-basekit intel-hpckit
           source /opt/intel/oneapi/setvars.sh
-          icc --version
-          icpc --version
-          ifort --version
-          export CXX=$(which icpc)
-          export CC=$(which icc)
-          export FC=$(which ifort)
+          echo "CXX=$(which icpc)" >> $GITHUB_ENV
+          echo "CC=$(which icc)" >> $GITHUB_ENV
+          echo "FC=$(which ifort)" >> $GITHUB_ENV
           echo "HALLO"
-          echo $CC
-          echo $CXX
-          echo $FC
           echo $GITHUB_ENV
        
       - name: Build
-        run:  |
-          export CXX=$(which icpc)
-          export CC=$(which icc)
-          export FC=$(which ifort)
-          /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
+        run:  /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
 
       - name: Test Suite (Debug)
         if: matrix.debug == '--debug'
