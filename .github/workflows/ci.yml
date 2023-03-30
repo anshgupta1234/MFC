@@ -74,6 +74,9 @@ jobs:
           export CXX=$(which icpc)
           export CC=$(which icc)
           export FC=$(which ifort)
+          echo "CC=icc"           >> $GITHUB_ENV
+          echo "CXX=icpc"             >> $GITHUB_ENV
+          echo "FC=ifort"             >> $GITHUB_ENV
           echo $CC
           echo $CXX
           echo $FC
