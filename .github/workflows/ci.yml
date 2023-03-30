@@ -73,15 +73,16 @@ jobs:
           set +e
           source /opt/intel/oneapi/setvars.sh
           set -e
+          echo $CC
+          echo $CXX
+          echo $FC
           export CXX=$(which icpc)
           export CC=$(which icc)
           export FC=$(which ifort)
-          echo "OMPI_FC=ifort" >> $GITHUB_ENV
-          echo "OMPI_CXX=icpc"     >> $GITHUB_ENV
-          echo "OMPI_MPICC=icc"   >> $GITHUB_ENV
-          echo "CC=icc"           >> $GITHUB_ENV
-          echo "CXX=icpc"          >> $GITHUB_ENV
-          echo "FC=ifort"      >> $GITHUB_ENV
+          export OMPI_FC=ifort
+          echo $CC
+          echo $CXX
+          echo $FC
        
       - name: Build
         run:  /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
