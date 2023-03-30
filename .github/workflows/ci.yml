@@ -81,7 +81,9 @@ jobs:
           echo $GITHUB_ENV
        
       - name: Build
-        run:  /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
+        run:  |
+        ifort --version
+        /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
 
       - name: Test Suite (Debug)
         if: matrix.debug == '--debug'
