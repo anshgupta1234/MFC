@@ -75,17 +75,17 @@ jobs:
           export CC=$(which icc)
           export FC=$(which ifort)
           echo "HALLO"
-          echo "CC=$(which icc)"
-          echo "CC=$(which icc)"           >> $GITHUB_ENV
-          echo "CXX=$(which icpc)"              >> $GITHUB_ENV
-          echo "FC=$(which ifort)"             >> $GITHUB_ENV
           echo $CC
           echo $CXX
           echo $FC
           echo $GITHUB_ENV
        
       - name: Build
-        run:  /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
+        run:  |
+          export CXX=$(which icpc)
+          export CC=$(which icc)
+          export FC=$(which ifort)
+          /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
 
       - name: Test Suite (Debug)
         if: matrix.debug == '--debug'
