@@ -71,9 +71,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y intel-oneapi-common-vars intel-oneapi-compiler-fortran intel-oneapi-mkl intel-oneapi-mpi intel-oneapi-mpi-devel intel-basekit intel-hpckit
           source /opt/intel/oneapi/setvars.sh
-          echo "CXX=$(which icpc)" >> $GITHUB_ENV
-          echo "CC=$(which icc)" >> $GITHUB_ENV
-          echo "FC=$(which ifort)" >> $GITHUB_ENV
+          echo "CXX=$(which icpc)"          >> $GITHUB_ENV
+          echo "CC=$(which icc)"            >> $GITHUB_ENV
+          echo "FC=$(which ifort)"          >> $GITHUB_ENV
+          echo "OMPI_FC=$(which ifort)"     >> $GITHUB_ENV
+          echo "OMPI_CXX=$(which icpc)"     >> $GITHUB_ENV
+          echo "OMPI_MPICC=$(which icc)"    >> $GITHUB_ENV
           echo "HALLO"
           echo $GITHUB_ENV
        
