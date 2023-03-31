@@ -67,7 +67,6 @@ jobs:
           list: true
           components: |
             icx
-            icpx
             ifx
             impi
             mkl
