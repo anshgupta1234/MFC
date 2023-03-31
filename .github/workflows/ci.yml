@@ -62,7 +62,7 @@ jobs:
 
       - name: Setup Ubuntu (Intel)
         if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
-        uses: rscohn2/setup-oneapi
+        uses: rscohn2/setup-oneapi@v0
         with:
           list: true
           components: |
