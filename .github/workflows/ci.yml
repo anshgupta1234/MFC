@@ -69,9 +69,7 @@ jobs:
           rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
           sudo echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
           sudo apt-get update
-          sudo apt-get install -y intel-oneapi-common-vars intel-oneapi-mkl intel-oneapi-mpi intel-oneapi-mpi-devel
-          wget https://registrationcenter-download.intel.com/akdlm/irc_nas/19084/l_HPCKit_p_2023.0.0.25400.sh
-          sudo sh ./l_HPCKit_p_2023.0.0.25400.sh
+          sudo apt-get install -y intel-oneapi-common-vars intel-oneapi-mkl intel-oneapi-mpi intel-oneapi-mpi-devel intel-basekit intel-hpckit
           source /opt/intel/oneapi/setvars.sh
           echo "CXX=$(which icpc)"          >> $GITHUB_ENV
           echo "CC=$(which icc)"            >> $GITHUB_ENV
