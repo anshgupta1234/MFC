@@ -57,11 +57,11 @@ jobs:
           HOMEBREW_MAKE_JOBS=$(nproc) brew install --cc=gcc-${{ matrix.gcc }} --verbose --build-from-source open-mpi
 
       - name: Setup Ubuntu
-        if:   matrix.os == 'ubuntu-latest' && !matrix.intel
+        if:   matrix.os == 'ubuntu-latest' && matrix.intel == false
         run:  sudo apt install tar wget make cmake gcc g++ python3 python3-dev "openmpi-*" libopenmpi-dev
 
       - name: Setup Ubuntu (Intel)
-        if:   matrix.os == 'ubuntu-latest' && matrix.intel
+        if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
         run: |
           sudo apt install tar wget make cmake python3 python3-dev "openmpi-*" libopenmpi-dev pkg-config build-essential
           wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
