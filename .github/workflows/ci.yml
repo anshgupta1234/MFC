@@ -78,6 +78,7 @@ jobs:
           echo "OMPI_CXX=$(which icpc)"     >> $GITHUB_ENV
           echo "OMPI_MPICC=$(which icc)"    >> $GITHUB_ENV
           echo "HALLO"
+          echo $(where icx)
           echo $GITHUB_ENV
        
       - name: Build
