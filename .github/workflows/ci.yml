@@ -60,16 +60,6 @@ jobs:
         if:   matrix.os == 'ubuntu-latest' && matrix.intel == false
         run:  sudo apt install tar wget make cmake gcc g++ python3 python3-dev "openmpi-*" libopenmpi-dev
 
-      - name: Setup Ubuntu (Intel)
-        if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
-        uses: rscohn2/setup-oneapi@v0
-        with:
-          list: true
-          components: |
-            icx
-            ifx
-            impi
-            mkl
       - name: Continue Setup (Intel)
         if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
         run: |
