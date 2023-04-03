@@ -62,12 +62,11 @@ jobs:
 
       - name: Setup Ubuntu (Intel)
         if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
-        uses: rscohn2@setup-oneapi
+        uses: rscohn2/setup-oneapi@v0
         with:
           list: true
           components: |
             icx
-            icpx
             ifx
             impi
             mkl
@@ -75,6 +74,7 @@ jobs:
         if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
         run: |
           sudo apt install tar wget make cmake python3 python3-dev "openmpi-*" libopenmpi-dev
+          source /opt/intel/oneapi/setvars.sh
           echo "CXX=$(which icpx)"          >> $GITHUB_ENV
           echo "CC=$(which icx)"            >> $GITHUB_ENV
           echo "FC=$(which ifx)"          >> $GITHUB_ENV
@@ -94,87 +94,6 @@ jobs:
         if: matrix.debug == '--no-debug'
         run:  /bin/bash mfc.sh test  -j $(nproc) -a 
         
-  self-cpu:
-    name: (Self) Test Suite - CPU
-    strategy:
-      matrix:
-        include:
-          - os: [self-hosted, wingtip]
-    runs-on: ${{ matrix.os }}
-    if: github.repository == 'MFlowCode/MFC'
-    steps:
-      - name: Clone
-        uses: actions/checkout@v3
-          
-      - name: Setup
-        run:  echo "test"
-        
-      - name: Build
-        run:  |
-          module use /opt/nvidia/hpc_sdk/modulefiles/
-          module load nvhpc
-          /bin/bash mfc.sh build -j 8 
-
-      - name: Test Suite
-        run:  |
-          module use /opt/nvidia/hpc_sdk/modulefiles/
-          module load nvhpc
-          /bin/bash mfc.sh test -j 8 -a 
-          
-  self-cpu-debug:
-    name: (Self) Test Suite - CPU - debug
-    strategy:
-      matrix:
-        include:
-          - os: [self-hosted, wingtip]
-    runs-on: ${{ matrix.os }}
-    if: github.repository == 'MFlowCode/MFC'
-    steps:
-      - name: Clone
-        uses: actions/checkout@v3
-          
-      - name: Setup
-        run:  echo "test"
-        
-      - name: Build
-        run:  |
-          module use /opt/nvidia/hpc_sdk/modulefiles/
-          module load nvhpc
-          /bin/bash mfc.sh build -j 8 --debug
-
-      - name: Test Suite
-        run:  |
-          module use /opt/nvidia/hpc_sdk/modulefiles/
-          module load nvhpc
-          /bin/bash mfc.sh test -j 8 --debug
-
-  self-gpu:
-    name: (Self) Test Suite - GPU
-    strategy:
-      matrix:
-        include:
-          - os: [self-hosted, wingtip]
-    runs-on: ${{ matrix.os }}
-    if: github.repository == 'MFlowCode/MFC'
-    steps:
-      - name: Clone
-        uses: actions/checkout@v3
-          
-      - name: Setup
-        run:  echo "test"
-        
-      - name: Build
-        run:  |
-          module use /opt/nvidia/hpc_sdk/modulefiles/
-          module load nvhpc
-          /bin/bash mfc.sh build -j 8 --gpu 
-
-      - name: Test Suite
-        run:  |
-          module use /opt/nvidia/hpc_sdk/modulefiles/
-          module load nvhpc
-          /bin/bash mfc.sh test -j 8 -b mpirun --gpu -a
-    
 #   self-gpu-debug:
 #     name: (Self) Test Suite - GPU - debug
 #     strategy:
