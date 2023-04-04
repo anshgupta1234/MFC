@@ -75,9 +75,9 @@ jobs:
         run: |
           sudo apt install tar wget make cmake python3 python3-dev
           source /opt/intel/oneapi/setvars.sh
-          echo "CXX=$(which mpiicc)"          >> $GITHUB_ENV
-          echo "CC=$(which mpiicpc)"            >> $GITHUB_ENV
-          echo "FC=$(which mpiifort)"          >> $GITHUB_ENV
+          echo "CXX=$(which icx)"          >> $GITHUB_ENV
+          echo "CC=$(which icpc)"            >> $GITHUB_ENV
+          echo "FC=$(which ifx)"          >> $GITHUB_ENV
           echo "OMPI_FC=$(which mpiifort)"     >> $GITHUB_ENV
           echo "OMPI_CXX=$(which mpiicpc)"     >> $GITHUB_ENV
           echo "OMPI_MPICC=$(which mpiicc)"    >> $GITHUB_ENV
