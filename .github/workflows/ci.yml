@@ -83,12 +83,6 @@ jobs:
           echo "OMPI_MPICC=$(which icx)"    >> $GITHUB_ENV
           echo "CMAKE_BUILD_TYPE=Debug"    >> $GITHUB_ENV
           echo "MPI_HOME=/opt/intel/oneapi/mpi/2021.8.0/"    >> $GITHUB_ENV
-
-          echo "MPI_C_COMPILER=mpiicc"    >> $GITHUB_ENV
-          echo "MPI_Fortran_COMPILER=mpiifort"    >> $GITHUB_ENV
-          echo "CMAKE_C_COMPILER=mpiicc"    >> $GITHUB_ENV
-          echo "CMAKE_Fortran_COMPILER=mpiifort"    >> $GITHUB_ENV
-          ls /opt/intel/oneapi/mpi/2021.8.0/
           echo $GITHUB_ENV
           mpiicc --version
           mpiifort --version
