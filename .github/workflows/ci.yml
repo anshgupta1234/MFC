@@ -85,7 +85,7 @@ jobs:
           echo "MPIEXEC_EXECUTABLE=/opt/intel/oneapi/mpi/2021.8.0/bin/mpiexec"    >> $GITHUB_ENV 
           echo "MPI_HOME=/opt/intel/oneapi/mpi/2021.8.0/"    >> $GITHUB_ENV 
           echo $GITHUB_ENV
-          ls /opt/intel/oneapi/mpi/2021.8.0/bin/
+          ls /opt/intel/oneapi/mpi/
           mpiexec --version
        
       - name: Build
