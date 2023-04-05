@@ -89,7 +89,9 @@ jobs:
           mpiifort --version
        
       - name: Build
-        run:  /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
+        run:  |
+          export CMAKE_BUILD_TYPE=Debug
+          /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
 
       - name: Test Suite (Debug)
         if: matrix.debug == '--debug'
