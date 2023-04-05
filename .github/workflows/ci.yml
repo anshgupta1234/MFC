@@ -85,12 +85,13 @@ jobs:
           echo "MPIEXEC_EXECUTABLE=/opt/intel/oneapi/mpi/2021.8.0/bin/mpiexec"    >> $GITHUB_ENV 
           echo "MPI_HOME=/opt/intel/oneapi/mpi/2021.8.0/"    >> $GITHUB_ENV 
           echo $GITHUB_ENV
-          mpiicc --version
-          mpiifort --version
+          ls /opt/intel/oneapi/mpi/2021.8.0/bin/
+          mpiexec --version
        
       - name: Build
         run:  |
-          export CMAKE_BUILD_TYPE=Debug
+          echo $MPI_HOME
+          echo $MPIEXEC_EXECUTABLE
           /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
 
       - name: Test Suite (Debug)
