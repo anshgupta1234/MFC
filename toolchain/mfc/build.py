@@ -146,7 +146,6 @@ def build_target(name: str, history: typing.List[str] = None):
         # See: https://cmake.org/cmake/help/latest/manual/cmake.1.html.
         f"-Wdev",
         f"--debug-output",
-        f"--trace",
         # Save a compile_commands.json file with the compile commands used to
         # build the configured targets. This is mostly useful for debugging.
         # See: https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html.
