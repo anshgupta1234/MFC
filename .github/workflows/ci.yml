@@ -86,12 +86,18 @@ jobs:
           echo $GITHUB_ENV
           ls /opt/intel/oneapi/mpi/2021.9.0/bin/
           mpiexec --version
-       
-      - name: Build
+
+      - name: Build (Intel)
+        if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
         run:  |
           echo $MPI_HOME
           echo $MPIEXEC_EXECUTABLE
+          source /opt/intel/oneapi/setvars.sh
           /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
+       
+      - name: Build
+        if:   matrix.os != 'ubuntu-latest' || matrix.intel != true
+        run:  /bin/bash mfc.sh build -j $(nproc) ${{ matrix.debug }}
 
       - name: Test Suite (Debug)
         if: matrix.debug == '--debug'
