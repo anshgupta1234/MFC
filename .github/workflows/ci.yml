@@ -84,8 +84,6 @@ jobs:
           echo "CMAKE_BUILD_TYPE=Debug"    >> $
           echo "MPI_HOME=/opt/intel/oneapi/mpi/2021.9.0/"    >> $GITHUB_ENV 
           echo $GITHUB_ENV
-          ls /opt/intel/oneapi/mpi/2021.9.0/bin/
-          mpiexec --version
 
       - name: Build (Intel)
         if:   matrix.os == 'ubuntu-latest' && matrix.intel == true
