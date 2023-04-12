@@ -79,6 +79,8 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
             -fcheck=all     -fbacktrace
             -fimplicit-none
         )
+    else()
+        add_compile_options(-Ofast)
     endif()
 
     if (CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER 10)
@@ -107,6 +109,8 @@ elseif (CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_compile_options(-g -O0 -traceback -debug)
+    else()
+        add_compile_options(-fast)
     endif()
 elseif ((CMAKE_Fortran_COMPILER_ID STREQUAL "NVHPC") OR (CMAKE_Fortran_COMPILER_ID STREQUAL "PGI"))
     add_compile_options(
@@ -123,6 +127,8 @@ elseif ((CMAKE_Fortran_COMPILER_ID STREQUAL "NVHPC") OR (CMAKE_Fortran_COMPILER_
     
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_compile_options(-C -g -O0 -traceback -Mchkptr -Mchkstk -Minform=inform -Mbounds)
+    else()
+        add_compile_options(-fastsse)
     endif()
 endif()
 
