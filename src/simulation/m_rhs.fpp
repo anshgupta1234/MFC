@@ -1853,8 +1853,8 @@ contains
             call nvtxEndRange
         end do
 
-        !$acc parallel loop collapse(3) gang vector default(present)
         if (ib) then
+            !$acc parallel loop collapse(3) gang vector default(present)
             do l = 0, p
                 do k = 0, n
                     do j = 0, m
