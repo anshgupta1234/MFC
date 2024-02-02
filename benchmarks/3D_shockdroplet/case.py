@@ -191,8 +191,8 @@ print(json.dumps({
     'cyl_coord'                    : 'F',
     'dt'                           : dt,
     't_step_start'                 : 0,
-    't_step_stop'                  : 100,
-    't_step_save'                  : 100,
+    't_step_stop'                  : 500,
+    't_step_save'                  : 500,
     # ==========================================================
 
     # Simulation Algorithm Parameters ==========================
