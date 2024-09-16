@@ -341,6 +341,11 @@ contains
             patch_icpp(i)%smooth_patch_id = i
             patch_icpp(i)%smooth_coeff = dflt_real
             patch_icpp(i)%alpha_rho = dflt_real
+            patch_icpp(i)%theta = dflt_real
+            patch_icpp(i)%c = dflt_real
+            patch_icpp(i)%t = dflt_real
+            patch_icpp(i)%m = dflt_real
+            patch_icpp(i)%p = dflt_real
             patch_icpp(i)%rho = dflt_real
             patch_icpp(i)%vel = dflt_real
             patch_icpp(i)%pres = dflt_real

@@ -125,6 +125,12 @@ for p_id in range(1, 10+1):
         PRE_PROCESS[f"patch_icpp({p_id})%{real_attr}"] = ParamType.REAL
     PRE_PROCESS[f"patch_icpp({p_id})%pres"] = ParamType.REAL.analytic()
 
+    for real_attr, ty in [("geometry", ParamType.INT), ("radius", ParamType.REAL),
+                          ("theta", ParamType.REAL), ("slip", ParamType.LOG),
+                          ("c", ParamType.REAL), ("p", ParamType.REAL),
+                          ("t", ParamType.REAL), ("m", ParamType.REAL)]:
+        PRE_PROCESS[f"patch_icpp({p_id})%{real_attr}"] = ty
+
     # (cameron): This parameter has since been removed.
     # for i in range(100):
     #     PRE_PROCESS.append(f"patch_icpp({p_id})%Y({i})")

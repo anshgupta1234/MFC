@@ -308,14 +308,25 @@ contains
         integer :: i, j, k, l
         integer :: Np1, Np2
 
-        if (.not. ib) return
-        x0 = patch_ib(patch_id)%x_centroid
-        y0 = patch_ib(patch_id)%y_centroid
-        ca = patch_ib(patch_id)%c
-        pa = patch_ib(patch_id)%p
-        ma = patch_ib(patch_id)%m
-        ta = patch_ib(patch_id)%t
-        theta = pi*patch_ib(patch_id)%theta/180d0
+        print *, "yo this is airfoil?", patch_id
+        
+        if (.not. ib) then
+            x0 = patch_icpp(patch_id)%x_centroid
+            y0 = patch_icpp(patch_id)%y_centroid
+            ca = patch_icpp(patch_id)%c
+            pa = patch_icpp(patch_id)%p
+            ma = patch_icpp(patch_id)%m
+            ta = patch_icpp(patch_id)%t
+            theta = pi*patch_icpp(patch_id)%theta/180d0
+        else
+            x0 = patch_ib(patch_id)%x_centroid
+            y0 = patch_ib(patch_id)%y_centroid
+            ca = patch_ib(patch_id)%c
+            pa = patch_ib(patch_id)%p
+            ma = patch_ib(patch_id)%m
+            ta = patch_ib(patch_id)%t
+            theta = pi*patch_ib(patch_id)%theta/180d0
+        end if
 
         Np1 = int((pa*ca/dx)*20)
         Np2 = int(((ca - pa*ca)/dx)*20)
@@ -378,7 +389,8 @@ contains
         do j = 0, n
             do i = 0, m
 
-                if (.not. f_is_default(patch_ib(patch_id)%theta)) then
+                if ((ib .and. .not. f_is_default(patch_ib(patch_id)%theta)) .or. &
+                    (.not. ib .and. .not. f_is_default(patch_icpp(patch_id)%theta))) then
                     x_act = (x_cc(i) - x0)*cos(theta) - (y_cc(j) - y0)*sin(theta) + x0
                     y_act = (x_cc(i) - x0)*sin(theta) + (y_cc(j) - y0)*cos(theta) + y0
                 else
@@ -440,6 +452,20 @@ contains
                         end if
                     end if
                 end if
+
+                if (.not. ib) then
+                    if ((patch_icpp(patch_id)%alter_patch(patch_id_fp(i, j, 0))) &
+                        .or. &
+                        (.not. ib .and. patch_id_fp(i, j, 0) == smooth_patch_id)) &
+                        then
+                        
+                        call s_assign_patch_primitive_variables(patch_id, i, j, 0, &
+                                                                eta, q_prim_vf, patch_id_fp)
+
+                        @:analytical()
+                    end if
+                end if
+
             end do
         end do
 
@@ -963,7 +989,7 @@ contains
                         .and. &
                         patch_icpp(patch_id)%alter_patch(patch_id_fp(i, j, 0))) &
                         then
-
+                        
                         call s_assign_patch_primitive_variables(patch_id, i, j, 0, &
                                                                 eta, q_prim_vf, patch_id_fp)
 

@@ -175,6 +175,8 @@ module m_derived_types
         real(kind(0d0)) :: qv !<
         real(kind(0d0)) :: qvp !<
 
+        real(kind(0d0)) :: c, p, t, m, theta
+
         !! Primitive variables associated with the patch. In order, these include
         !! the partial densities, density, velocity, pressure, volume fractions,
         !! specific heat ratio function and the liquid stiffness function.
