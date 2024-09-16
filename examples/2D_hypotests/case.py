@@ -32,7 +32,7 @@ print(json.dumps({
 		    # ==========================================================
                                                                                 
                     # Simulation Algorithm Parameters ==========================
-                    'num_patches'                  : 3,  # Two patches                        
+                    'num_patches'                  : 2,  # Two patches                        
                     'model_eqns'                   : 2,  # Number of model equations                       
                     'alt_soundspeed'               : 'F',                      
                     'num_fluids'                   : 1,                        
@@ -72,7 +72,7 @@ print(json.dumps({
                     'patch_icpp(1)%y_centroid'     : 0.5,  # y-center
                     'patch_icpp(1)%length_x'       : 1.0,   # x-length                    
                     'patch_icpp(1)%length_y'       : 1.0,   # y-length
-                    'patch_icpp(1)%vel(1)'         : 0.0,   # x-velocity  
+                    'patch_icpp(1)%vel(1)'         : '300*(y-0.5)',   # x-velocity  
                     'patch_icpp(1)%vel(2)'         : 0.0,   # y-velocity   
                     'patch_icpp(1)%pres'           : 1.E+5,  # Pressure                    
                     'patch_icpp(1)%alpha_rho(1)'   : 1050,  # Density                    
@@ -89,29 +89,13 @@ print(json.dumps({
                     'patch_icpp(2)%p'              : 0.4,
                     'patch_icpp(2)%m'              : 0.02,              
                     'patch_icpp(2)%theta'          : -45,              
-                    'patch_icpp(2)%vel(1)'         : 0.0,   # x-velocity  
+                    'patch_icpp(2)%vel(1)'         : '300*(y-0.5)',   # x-velocity  
                     'patch_icpp(2)%vel(2)'         : 0.0,   # y-velocity   
                     'patch_icpp(2)%pres'           : 1.E+5,  # Pressure                 
                     'patch_icpp(2)%alpha_rho(1)'   : 1000,  # Density                 
                     'patch_icpp(2)%alpha(1)'       : 1.,                
                     'patch_icpp(2)%tau_e(1)'       : 0.0, 
                     'patch_icpp(2)%alter_patch(1)' : 'T',
-                    # ==========================================================
-
-                    'patch_icpp(3)%geometry'       : 3,  # 2D geometry                     
-                    'patch_icpp(3)%x_centroid'     : 0.1,  # x-center                    
-                    'patch_icpp(3)%y_centroid'     : 0.5,  # y-center
-                    'patch_icpp(3)%length_x'       : 0.2,   # x-length                    
-                    'patch_icpp(3)%length_y'       : 1.0,   # y-length
-                    'patch_icpp(3)%vel(1)'         : '1000*y*y',   # x-velocity  
-                    'patch_icpp(3)%vel(2)'         : 0.0,   # y-velocity   
-                    'patch_icpp(3)%pres'           : 1.E+5,  # Pressure                    
-                    'patch_icpp(3)%alpha_rho(1)'   : 1000,  # Density                    
-                    'patch_icpp(3)%alpha(1)'       : 1.,                
-                    'patch_icpp(3)%tau_e(1)'       : 0.0,   
-                    'patch_icpp(3)%alter_patch(1)' : 'T',
-                    'patch_icpp(3)%alter_patch(2)' : 'T',
-                    # ==========================================================
 
                     # Fluids Physical Parameters ===============================
                     'fluid_pp(1)%gamma'            : 1.E+00/(4.4E+00-1.E+00),   

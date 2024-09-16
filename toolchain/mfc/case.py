@@ -99,8 +99,8 @@ class Case:
     def __get_pre_fpp(self, print: bool) -> str:
         DATA = {
             1: {'ptypes': [1, 15, 16],                         'sf_idx': 'i, 0, 0'},
-            2: {'ptypes': [2,  3,  4,  5,  6,  7, 17, 18, 21], 'sf_idx': 'i, j, 0'},
-            3: {'ptypes': [8,  9, 10, 11, 12, 13, 14, 19, 21], 'sf_idx': 'i, j, k'}
+            2: {'ptypes': [2,  3,  4,  5,  6,  7, 17, 18, 21, 22], 'sf_idx': 'i, j, 0'},
+            3: {'ptypes': [8,  9, 10, 11, 12, 13, 14, 19, 21, 22], 'sf_idx': 'i, j, k'}
         }[self.__get_ndims()]
 
         patches = {}
