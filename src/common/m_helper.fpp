@@ -446,7 +446,7 @@ contains
     !! @param matrix Transformation matrix.
     subroutine s_transform_vec(vec, matrix)
 
-        t_vec3, intent(inout) :: vec
+        real(kind(0d0)), intent(inout) :: vec(3)
         t_mat4x4, intent(in) :: matrix
 
         real(kind(0d0)), dimension(1:4) :: tmp

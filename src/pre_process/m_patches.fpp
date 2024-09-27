@@ -13,7 +13,7 @@ module m_patches
     ! Dependencies =============================================================
     use m_model                 ! Subroutine(s) related to STL files
 
-    use m_derived_types         ! Definitions of the derived types
+    ! use m_derived_types         ! Definitions of the derived types
 
     use m_global_parameters    !< Definitions of the global parameters
 
@@ -1615,21 +1615,33 @@ contains
         !!              the cuboidal patch DOES NOT allow for the smearing of its
         !!              boundaries.
         !!      @param patch_id is the patch identifier
-    subroutine s_cuboid(patch_id, patch_id_fp, q_prim_vf) ! ----------------------------------------
+    subroutine s_cuboid(patch_id, patch_id_fp, q_prim_vf, ib) ! ----------------------------------------
 
         integer, intent(IN) :: patch_id
+        logical, intent(IN) :: ib   !< True if this patch is an immersed boundary
         integer, intent(INOUT), dimension(0:m, 0:n, 0:p) :: patch_id_fp
         type(scalar_field), dimension(1:sys_size) :: q_prim_vf
 
         integer :: i, j, k !< Generic loop iterators
 
         ! Transferring the cuboid's centroid and length information
-        x_centroid = patch_icpp(patch_id)%x_centroid
-        y_centroid = patch_icpp(patch_id)%y_centroid
-        z_centroid = patch_icpp(patch_id)%z_centroid
-        length_x = patch_icpp(patch_id)%length_x
-        length_y = patch_icpp(patch_id)%length_y
-        length_z = patch_icpp(patch_id)%length_z
+
+        if (.not. ib) then
+            x_centroid = patch_icpp(patch_id)%x_centroid
+            y_centroid = patch_icpp(patch_id)%y_centroid
+            z_centroid = patch_icpp(patch_id)%z_centroid
+            length_x = patch_icpp(patch_id)%length_x
+            length_y = patch_icpp(patch_id)%length_y
+            length_z = patch_icpp(patch_id)%length_z
+        else
+            x_centroid = patch_ib(patch_id)%x_centroid
+            y_centroid = patch_ib(patch_id)%y_centroid
+            z_centroid = patch_ib(patch_id)%z_centroid
+            length_x = patch_ib(patch_id)%length_x
+            length_y = patch_ib(patch_id)%length_y
+            length_z = patch_ib(patch_id)%length_z
+        end if
+
 
         ! Computing the beginning and the end x-, y- and z-coordinates of
         ! the cuboid based on its centroid and lengths
@@ -1661,25 +1673,38 @@ contains
                         cart_z = z_cc(k)
                     end if
 
-                    if (x_boundary%beg <= x_cc(i) .and. &
+                    if (.not. ib) then
+                        if (x_boundary%beg <= x_cc(i) .and. &
+                            x_boundary%end >= x_cc(i) .and. &
+                            y_boundary%beg <= cart_y .and. &
+                            y_boundary%end >= cart_y .and. &
+                            z_boundary%beg <= cart_z .and. &
+                            z_boundary%end >= cart_z &
+                            .and. &
+                            patch_icpp(patch_id)%alter_patch(patch_id_fp(i, j, k))) &
+                            then
+
+                            call s_assign_patch_primitive_variables(patch_id, i, j, k, &
+                                                                    eta, q_prim_vf, patch_id_fp)
+
+                            @:analytical()
+
+                            ! Updating the patch identities bookkeeping variable
+                            if (1d0 - eta < 1d-16) patch_id_fp(i, j, k) = patch_id
+
+                        end if
+                    end if
+
+                    if (ib .and. x_boundary%beg <= x_cc(i) .and. &
                         x_boundary%end >= x_cc(i) .and. &
                         y_boundary%beg <= cart_y .and. &
                         y_boundary%end >= cart_y .and. &
                         z_boundary%beg <= cart_z .and. &
-                        z_boundary%end >= cart_z &
-                        .and. &
-                        patch_icpp(patch_id)%alter_patch(patch_id_fp(i, j, k))) &
-                        then
+                        z_boundary%end >= cart_z) then
 
-                        call s_assign_patch_primitive_variables(patch_id, i, j, k, &
-                                                                eta, q_prim_vf, patch_id_fp)
-
-                        @:analytical()
-
-                        ! Updating the patch identities bookkeeping variable
-                        if (1d0 - eta < 1d-16) patch_id_fp(i, j, k) = patch_id
-
+                        patch_id_fp(i, j, k) = patch_id
                     end if
+
                 end do
             end do
         end do
@@ -1951,8 +1976,12 @@ contains
         t_mat4x4 :: transform
         real(kind(0d0)) :: normals(1:3)
 
-        integer :: boundary_vertex_count, boundary_edge_count
+        integer :: boundary_vertex_count, boundary_edge_count, total_vertices
         real(kind(0d0)), allocatable, dimension(:, :, :) :: boundary_v
+        real(kind(0d0)), allocatable, dimension(:, :) :: interpolated_boundary_v
+
+        real(kind(0d0)) :: distance
+        logical :: interpolate
 
 
         if (.not. ib .and. proc_rank == 0) then
@@ -1982,6 +2011,35 @@ contains
         bbox = f_create_bbox(model)
         call f_check_boundary(model, boundary_v, boundary_vertex_count, boundary_edge_count)
 
+        if (p > 0) then
+            call f_check_interpolation_3D(model, (/dx, dy, dz/), interpolate)
+        else
+            call f_check_interpolation_2D(boundary_v, boundary_vertex_count, (/dx, dy, dz/), interpolate)
+        end if
+
+        print*, 'boundary edge', boundary_edge_count
+
+        if (interpolate) then
+
+            if (proc_rank == 0) then
+                print*, 'Interpolating STL vertices...'
+            end if
+
+            if (p > 0) then
+                call f_interpolate_3D(model, (/dx, dy, dz/), interpolated_boundary_v, total_vertices)
+            else
+                call f_interpolate_2D(boundary_v, boundary_edge_count, (/dx, dy, dz/), interpolated_boundary_v, total_vertices)
+            end if
+        end if
+
+        if (proc_rank == 0) then
+            print*, 'Number of STL vertices:', 3*model%ntrs
+        end if
+
+        if (proc_rank == 0) then
+            print*, 'Total number of vertices:', total_vertices
+        end if
+
         if (proc_rank == 0) then
             write (*, "(A, 3(2X, F20.10))") "    > Model:  Min:", bbox%min(1:3)
             write (*, "(A, 3(2X, F20.10))") "    >         Cen:", (bbox%min(1:3) + bbox%max(1:3))/2d0
@@ -2008,14 +2066,10 @@ contains
         do i = 0, m; do j = 0, n; do k = 0, p
 
                     cell_num = i*(n + 1)*(p + 1) + j*(p + 1) + (k + 1)
-                    if (proc_rank == 0) then
-                        write (*, "(A, F20.2, A)", advance="no") &
-                            char(13)//"  * Generating grid: ", &
-                            (100*real(cell_num)/real(ncells)), "%"
-                    end if
-
-                    ! if (proc_rank == 0 .and. mod(cell_num, ncells/100) == 0) then
-                    !     print*, (100*real(cell_num)/real(ncells)), '%'
+                    ! if (proc_rank == 0) then
+                    !     write (*, "(A, F20.2, A)", advance="no") &
+                    !         char(13)//"  * Generating grid: ", &
+                    !         (100*real(cell_num)/real(ncells)), "%"
                     ! end if
 
                     point = (/x_cc(i), y_cc(j), 0d0/)
@@ -2057,17 +2111,42 @@ contains
 
                     if (ib) then
                         if (p > 0) then
-                            ! normals = f_tag_triangle_3D(model, point, (/dx, dy, dz/))
-                            ! STL_normals(i,j,k, 1:3) = normals
-                            ! STL_levelset%sf(i, j, k, patch_id) = f_distance(model, &
-                            !                                 & model%ntrs, point, &
-                            !                                 & (/dx, dy, dz/))
+                            call f_distance_normals_3D(model, point, normals, distance)
+
+                            if (interpolate) then
+                                STL_levelset%sf(i, j, k, patch_id) = f_interpolated_distance(interpolated_boundary_v, &
+                                                                                        total_vertices, &
+                                                                                        point, &
+                                                                                        (/dx, dy, dz/))
+                            else 
+                                STL_levelset%sf(i, j, k, patch_id) = distance
+
+                            end if
+
+                            if (patch_id_fp(i, j, k) == 0) then
+                                STL_levelset%sf(i, j, k, patch_id) = -abs(STL_levelset%sf(i, j, k, patch_id))
+                            end if
+                            
+                            if (patch_id_fp(i, j, k) == 0) then
+                                normals(1:3) = normals(1:3)  
+                            end if    
+
+                            STL_levelset_norm%vf(i, j, k, patch_id, 1:3) = normals(1:3)
+
                         else
-                            STL_levelset%sf(i, j, 0, patch_id) = f_distance(boundary_v, &
-                                                                    boundary_vertex_count, &
-                                                                    boundary_edge_count, &
-                                                                    point, &
-                                                                    & (/dx, dy, dz/))
+
+                            if (interpolate) then
+                                STL_levelset%sf(i, j, 0, patch_id) = f_interpolated_distance(interpolated_boundary_v, &
+                                                                                        total_vertices, &
+                                                                                        point, &
+                                                                                        (/dx, dy, dz/))
+                            else 
+                                STL_levelset%sf(i, j, 0, patch_id) = f_distance(boundary_v, &
+                                                                        boundary_vertex_count, &
+                                                                        boundary_edge_count, &
+                                                                        point, &
+                                                                        (/dx, dy, dz/))
+                            end if
                             
                             if (patch_id_fp(i, j, k) > 0) then
                                 STL_levelset%sf(i, j, 0, patch_id) = -abs(STL_levelset%sf(i, j, 0, patch_id))
@@ -2079,25 +2158,33 @@ contains
                                 point, &
                                 & (/dx, dy, dz/), normals)
 
-                            if (patch_id_fp(i, j, k) > 0) then
+                            if (patch_id_fp(i, j, k) == 0) then
                                 normals(1:3) = - normals(1:3)  
                             end if    
 
-                            STL_levelset_norm%vf(i, j, 0, patch_id, 1:3) = normals(1:3)
+                            STL_levelset_norm%vf(i, j, k, patch_id, 1:3) = normals(1:3)
 
                             ! print*, i, j, normals
 
                             ! STL_levelset_norm(i, j, k, patch_id, 1) = normals(1)
                             ! STL_levelset_norm(i, j, k, patch_id, 2) = normals(2)    
                             ! STL_levelset_norm(i, j, k, patch_id, 3) = normals(3)    
-
-                            ! print*, i, j, k, STL_levelset(i, j, 0, patch_id)
                             ! print*, i, j, k, 'normals', STL_levelset_norm(i, j, k, patch_id, 1:3)
 
-                        end if    
+                        end if 
                     end if
 
+                    if (i == 37) then
+                        ! print*, i, j, 'levelset', STL_levelset%sf(i, j, 0, patch_id), patch_id_fp(i, j, k)
+                        print*, i, j, STL_levelset_norm%vf(i, j, k, patch_id, 1:3)
+                    end if
+    
+                    if (j == 41) then
+                        ! print*, i, j, 0, STL_levelset%sf(i, j, 0, patch_id), patch_id_fp(i, j, k)
+                        ! print*, i, j, normals
 
+                    end if
+    
                     ! if (eta > patch_ib(patch_id)%model%threshold) then 
                     !     print*, '================='
                     !     print*, i, j, k
@@ -2117,10 +2204,6 @@ contains
             print *, ""
             print *, " * Cleaning up..."
         end if
-
-        ! print*, i, j, 0, STL_levelset(50, 25, 0, patch_id)
-        print*, 'total vertices', 3*model%ntrs,'boundary verticies', boundary_vertex_count
-
 
         call s_model_free(model)
 

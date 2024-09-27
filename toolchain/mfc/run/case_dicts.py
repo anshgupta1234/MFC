@@ -81,6 +81,10 @@ for ib_id in range(1, 10+1):
     PRE_PROCESS[f"patch_ib({ib_id})%model%spc"] = ParamType.INT
     PRE_PROCESS[f"patch_ib({ib_id})%model%threshold"] = ParamType.REAL
 
+    PRE_PROCESS[f"patch_ib({ib_id})%model%ength_x"] = ParamType.REAL
+    PRE_PROCESS[f"patch_ib({ib_id})%model%length_y"] = ParamType.REAL
+    PRE_PROCESS[f"patch_ib({ib_id})%model%length_z"] = ParamType.REAL
+
     for real_attr in ["translate", "scale", "rotate"]:
         for j in range(1, 4):
             PRE_PROCESS[f"patch_ib({ib_id})%model%{real_attr}({j})"] = ParamType.REAL

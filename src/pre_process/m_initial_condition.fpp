@@ -156,7 +156,7 @@ contains
 
                     ! Cuboidal patch
                 elseif (patch_icpp(i)%geometry == 9) then
-                    call s_cuboid(i, patch_id_fp, q_prim_vf)
+                    call s_cuboid(i, patch_id_fp, q_prim_vf, .false.)
 
                     ! Cylindrical patch
                 elseif (patch_icpp(i)%geometry == 10) then
@@ -201,6 +201,10 @@ contains
                 if (patch_ib(i)%geometry == 8) then
                     call s_sphere(i, ib_markers%sf, q_prim_vf, .true.)
                     call s_compute_sphere_levelset(levelset, levelset_norm, i)
+                ! Cube
+                elseif (patch_ib(i)%geometry == 9) then
+                        call s_cuboid(i, ib_markers%sf, q_prim_vf, .true.)
+                        call s_compute_cuboid_levelset(levelset, levelset_norm, i)
                 ! Cylindrical patch
                 elseif (patch_ib(i)%geometry == 10) then
                     call s_cylinder(i, ib_markers%sf, q_prim_vf, .true.)
