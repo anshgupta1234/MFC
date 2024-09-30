@@ -124,6 +124,22 @@ contains
         call s_compute_interpolation_coeffs(ghost_points)
         !$acc update device(ghost_points)
 
+        open(1, file="gp.txt", status="unknown", action="write")
+
+        do i = 1, num_gps
+            write (1, '(F12.5, F12.5)') x_cc(ghost_points(i)%loc(1)), y_cc(ghost_points(i)%loc(2))
+        end do
+
+        close (1)
+
+        open(1, file="ip.txt", status="unknown", action="write")
+
+        do i = 1, num_gps
+            write (1, '(F12.5, F12.5)') ghost_points(i)%ip_loc(1), ghost_points(i)%ip_loc(2)
+        end do
+
+        close (1)
+
     end subroutine s_ibm_setup
 
     !>  Subroutine that updates the conservative variables at the ghost points
