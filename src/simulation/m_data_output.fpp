@@ -772,7 +772,7 @@ contains
             ! Initialize MPI data I/O
 
             if (ib) then
-                call s_initialize_mpi_data(q_cons_vf, ib_markers)
+                call s_initialize_mpi_data(q_cons_vf, ib_markers, levelset, levelset_norm)
             else
                 call s_initialize_mpi_data(q_cons_vf)
             end if
@@ -845,7 +845,7 @@ contains
             ! Initialize MPI data I/O
 
             if (ib) then
-                call s_initialize_mpi_data(q_cons_vf, ib_markers)
+                call s_initialize_mpi_data(q_cons_vf, ib_markers, levelset, levelset_norm)
             else
                 call s_initialize_mpi_data(q_cons_vf)
             end if
