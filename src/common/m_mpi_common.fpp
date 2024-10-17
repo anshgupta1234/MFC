@@ -151,20 +151,26 @@ contains
             MPI_IO_levelsetnorm_DATA%var%vf => levelset_norm%vf
 #else
             MPI_IO_IB_DATA%var%sf => ib_markers%sf(0:m, 0:n, 0:p)
+
+#ifndef MFC_POST_PROCESS
             MPI_IO_levelset_DATA%var%sf => levelset%sf(0:m, 0:n, 0:p, 1:num_ibs)
             MPI_IO_levelsetnorm_DATA%var%vf => levelset_norm%vf(0:m, 0:n, 0:p, 1:num_ibs, 1:3)
 #endif
+
+#endif
             call MPI_TYPE_CREATE_SUBARRAY(num_dims, sizes_glb, sizes_loc, start_idx, &
                                           MPI_ORDER_FORTRAN, MPI_INTEGER, MPI_IO_IB_DATA%view, ierr)
+            call MPI_TYPE_COMMIT(MPI_IO_IB_DATA%view, ierr)
+
+#ifndef MFC_POST_PROCESS
             call MPI_TYPE_CREATE_SUBARRAY(num_dims, sizes_glb, sizes_loc, start_idx, &
                                           MPI_ORDER_FORTRAN, MPI_DOUBLE_PRECISION, MPI_IO_levelset_DATA%view, ierr)
             call MPI_TYPE_CREATE_SUBARRAY(num_dims, sizes_glb, sizes_loc, start_idx, &
                                           MPI_ORDER_FORTRAN, MPI_DOUBLE_PRECISION, MPI_IO_levelsetnorm_DATA%view, ierr)
 
-            call MPI_TYPE_COMMIT(MPI_IO_IB_DATA%view, ierr)
             call MPI_TYPE_COMMIT(MPI_IO_levelset_DATA%view, ierr)
             call MPI_TYPE_COMMIT(MPI_IO_levelsetnorm_DATA%view, ierr)
-
+#endif
         end if
 
 #ifndef MFC_POST_PROCESS
