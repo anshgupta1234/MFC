@@ -437,7 +437,7 @@ contains
                         FORM='unformatted', &
                         ACTION='read', &
                         STATUS='old')
-                read (2) levelset_norm%vf(0:m, 0:n, 0:p, 1:num_ibs, 3); close (2)
+                read (2) levelset_norm%vf(0:m, 0:n, 0:p, 1:num_ibs, 1:3); close (2)
             else
                 call s_mpi_abort(trim(file_path)//' is missing. Exiting ...')
             end if
