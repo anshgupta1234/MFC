@@ -149,7 +149,7 @@ contains
                 ! Spherical patch
                 if (patch_icpp(i)%geometry == 8) then
                     call s_sphere(i, patch_id_fp, q_prim_vf, .false.)
-                    
+
                     ! Cuboidal patch
                 elseif (patch_icpp(i)%geometry == 9) then
                     call s_cuboid(i, patch_id_fp, q_prim_vf)

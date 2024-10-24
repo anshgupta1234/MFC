@@ -60,11 +60,11 @@ module m_data_output
             ! IB markers
             type(integer_field), &
                 intent(in) :: ib_markers
-            
+
             ! Levelset
             type(levelset_field), &
                 intent(IN) :: levelset
-            
+
             ! Levelset Norm
             type(levelset_norm_field), &
                 intent(IN) :: levelset_norm
@@ -98,9 +98,9 @@ contains
             intent(in) :: ib_markers
 
         ! Levelset
-            type(levelset_field), &
-                intent(IN) :: levelset
-            
+        type(levelset_field), &
+            intent(IN) :: levelset
+
         ! Levelset Norm
         type(levelset_norm_field), &
             intent(IN) :: levelset_norm
@@ -208,7 +208,6 @@ contains
         open (1, FILE=trim(file_loc), FORM='unformatted', STATUS=status)
         write (1) levelset_norm%vf
         close (1)
-
 
         ! Outputting Conservative Variables ================================
         do i = 1, sys_size
@@ -488,10 +487,10 @@ contains
                         else
                             write (2, FMT) x_cc(j), y_cc(k), real(ib_markers%sf(j, k, l))
                         end if
-                     end do
-                 end do
+                    end do
+                end do
             end do
- 
+
             close (2)
 
             do i = 1, num_ibs
@@ -536,9 +535,9 @@ contains
             intent(in) :: ib_markers
 
         ! Levelset
-            type(levelset_field), &
-                intent(IN) :: levelset
-            
+        type(levelset_field), &
+            intent(IN) :: levelset
+
         ! Levelset Norm
         type(levelset_norm_field), &
             intent(IN) :: levelset_norm
@@ -574,7 +573,7 @@ contains
             ! Initialize MPI data I/O
             if (ib) then
                 call s_initialize_mpi_data(q_cons_vf, ib_markers, &
-                                            levelset, levelset_norm)
+                                           levelset, levelset_norm)
             else
                 call s_initialize_mpi_data(q_cons_vf)
             end if
@@ -639,7 +638,7 @@ contains
             ! Initialize MPI data I/O
             if (ib) then
                 call s_initialize_mpi_data(q_cons_vf, ib_markers, &
-                                            levelset, levelset_norm)
+                                           levelset, levelset_norm)
             else
                 call s_initialize_mpi_data(q_cons_vf)
             end if
@@ -717,7 +716,7 @@ contains
 
         ! IB Markers
         if (ib) then
-            
+
             write (file_loc, '(A)') 'ib.dat'
             file_loc = trim(restart_dir)//trim(mpiiofs)//trim(file_loc)
             inquire (FILE=trim(file_loc), EXIST=file_exist)

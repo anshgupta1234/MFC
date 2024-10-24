@@ -215,10 +215,7 @@ print(json.dumps({{**case, **mods}}))
     def compute_tolerance(self) -> float:
         if self.params.get("hypoelasticity", 'F') == 'T':
             return 1e-7
-
-        if self.params.get('ib', 'F') == 'T':
-            return 1e-8
-
+        
         if any(self.params.get(key, 'F') == 'T' for key in ['relax', 'qbmm', 'bubbles']):
             return 1e-10
 
