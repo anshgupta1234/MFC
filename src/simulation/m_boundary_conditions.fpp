@@ -47,6 +47,8 @@ contains
             call s_slip_wall(q_prim_vf, pb, mv, 1, -1)
         case (-16)    ! No-slip wall BC at beginning
             call s_no_slip_wall(q_prim_vf, pb, mv, 1, -1)
+        case (-17)
+            call s_velocity_inlet(q_prim_vf, pb, mv, 1, -1)
         case default ! Processor BC at beginning
             call s_mpi_sendrecv_variables_buffers( &
                 q_prim_vf, pb, mv, 1, -1)
@@ -213,6 +215,30 @@ contains
         ! END: Population of Buffers in z-direction ========================
 
     end subroutine s_populate_variables_buffers
+
+    subroutine s_velocity_inlet(q_prim_vf, pb, mv, bc_dir, bc_loc)
+
+        type(scalar_field), dimension(sys_size), intent(inout) :: q_prim_vf
+        real(kind(0d0)), dimension(startx:, starty:, startz:, 1:, 1:), intent(inout) :: pb, mv
+        integer, intent(in) :: bc_dir, bc_loc
+        integer :: j, k, l, q, i
+
+        do i = 1, sys_size
+            do l = 0, p
+                do k = 0, n
+                    do j = 1, buff_size
+                        if (i /= momxb) then
+                            q_prim_vf(i)%sf(-j, k, l) = &
+                                q_prim_vf(i)%sf(0, k, l)
+                        else
+                            q_prim_vf(i)%sf(-j, k, l) = 1 !hardcoded value
+                        end if
+                    end do
+                end do
+            end do
+        end do
+
+    end subroutine s_velocity_inlet
 
     subroutine s_ghost_cell_extrapolation(q_prim_vf, pb, mv, bc_dir, bc_loc)
 
