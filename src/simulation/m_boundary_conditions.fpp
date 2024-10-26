@@ -223,6 +223,7 @@ contains
         integer, intent(in) :: bc_dir, bc_loc
         integer :: j, k, l, q, i
 
+        !$acc parallel loop collapse(4) gang vector default(present)
         do i = 1, sys_size
             do l = 0, p
                 do k = 0, n
