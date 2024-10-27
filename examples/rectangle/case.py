@@ -23,9 +23,9 @@ print(json.dumps({
     'm'                            : 1800,
     'n'                            : 600,
     'p'                            : 0,
-    'dt'                           : 2E-5,
+    'dt'                           : 4.5E-4,
     't_step_start'                 : 0,
-    't_step_stop'                  : 40000,  #3000
+    't_step_stop'                  : 44000,  #3000
     't_step_save'                  : 4000,  #10
     # ==========================================================================
     
@@ -55,12 +55,14 @@ print(json.dumps({
     'riemann_solver'               : 2,
     'wave_speeds'                  : 1,
     # Grid stretching
+    'stretch_x'                    : 'T',
+    'stretch_y'                    : 'T',
     'x_a'                          : -0.5,
     'x_b'                          : 0.5,
-    'a_x'                          : 3,
+    'a_x'                          : 5,
     'y_a'                          : -0.5,
     'y_b'                          : 0.5,
-    'a_y'                          : 2,
+    'a_y'                          : 3,
     # We use ghost-cell 
     'bc_x%beg'                     : -17,
     'bc_x%end'                     : -3,
@@ -83,10 +85,10 @@ print(json.dumps({
     # Patch: Constant Tube filled with air =====================================
     # Specify the cylindrical air tube grid geometry
     'patch_icpp(1)%geometry'       : 3,
-    'patch_icpp(1)%x_centroid'     : 0,
+    'patch_icpp(1)%x_centroid'     : 5,
     # Uniform medium density, centroid is at the center of the domain
     'patch_icpp(1)%y_centroid'     : 0,
-    'patch_icpp(1)%length_x'       : 40,
+    'patch_icpp(1)%length_x'       : 60,
     'patch_icpp(1)%length_y'       : 30,  
     # Specify the patch primitive variables 
     'patch_icpp(1)%vel(1)'         : 1.E+00,
