@@ -3,6 +3,8 @@ import math
 
 Mu = 1.84E-05
 gam_a = 1.4
+Ma = 0.5
+Re = 40
 
 # Configuring case dictionary
 print(json.dumps({
@@ -20,10 +22,10 @@ print(json.dumps({
     'y_domain%beg'                 : -5,
     'y_domain%end'                 : 5,
     'cyl_coord'                    : 'F',
-    'm'                            : 1800,
-    'n'                            : 600,
+    'm'                            : 2100,
+    'n'                            : 700,
     'p'                            : 0,
-    'dt'                           : 4.5E-4,
+    'dt'                           : 3.5E-4,
     't_step_start'                 : 0,
     't_step_stop'                  : 44000,  #3000
     't_step_save'                  : 4000,  #10
@@ -91,9 +93,9 @@ print(json.dumps({
     'patch_icpp(1)%length_x'       : 60,
     'patch_icpp(1)%length_y'       : 30,  
     # Specify the patch primitive variables 
-    'patch_icpp(1)%vel(1)'         : 1.E+00,
+    'patch_icpp(1)%vel(1)'         : Ma,
     'patch_icpp(1)%vel(2)'         : 0.0E+00,
-    'patch_icpp(1)%pres'           : 100.E+00,
+    'patch_icpp(1)%pres'           : 1/gam_a,
     'patch_icpp(1)%alpha_rho(1)'   : 1.E+00,
     'patch_icpp(1)%alpha(1)'       : 1.E+00,
     # # ========================================================================
@@ -109,6 +111,6 @@ print(json.dumps({
     # Fluids Physical Parameters ===============================================
     'fluid_pp(1)%gamma'            : 1.E+00/(gam_a-1.E+00),  # 2.50(Not 1.40)
     'fluid_pp(1)%pi_inf'           : 0,
-    'fluid_pp(1)%Re(1)'            : 40,
+    'fluid_pp(1)%Re(1)'            : Re/Ma,
     # ==========================================================================
 }))
